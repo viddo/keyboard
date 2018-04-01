@@ -6,11 +6,11 @@
 return {
   { 'a', 'iTunes' },            -- "A" for "Apple Music"
   { 'b', 'Google Chrome' },     -- "B" for "Browser"
-  { 'c', 'Slack' },             -- "C for "Chat"
-  { 'd', 'Remember The Milk' }, -- "D" for "Do!" ... or "Done!"
+  { 'c', 'Telegram' },             -- "C for "Chat"
+  { 'd', 'Activity Monitor' }, -- "D" for "Do!" ... or "Done!"
   { 'e', 'Atom' },              -- "E" for "Editor"
   { 'f', 'Finder' },            -- "F" for "Finder"
-  { 'g', 'Mailplane 3' },       -- "G" for "Gmail"
+  { 'g', 'Github Desktop' },       -- "G" for "Gmail"
   { 's', 'Slack' },             -- "S" for "Slack"
   { 't', 'iTerm' },             -- "T" for "Terminal"
 }
