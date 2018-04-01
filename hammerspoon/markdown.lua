@@ -110,3 +110,7 @@ end)
 markdownMode:bind({'ctrl'}, 'm', function()
   markdownMode:exit()
 end)
+-- Abort by escape, too
+markdownMode:bind({}, 'escape', function()
+  markdownMode:exit()
+end)
