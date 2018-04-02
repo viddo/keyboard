@@ -10,9 +10,16 @@ function hs.window.left(win)
   local screen = win:screen()
   local max = screen:frame()
 
+  if f.w == math.floor(max.w * 0.7) then
+    f.w = max.w * 0.4
+  elseif f.w == math.floor(max.w * 0.5) then
+    f.w = max.w * 0.7
+  else
+    f.w = max.w * 0.5
+  end
+
   f.x = max.x
   f.y = max.y
-  f.w = max.w / 2
   f.h = max.h
   win:setFrame(f)
 end
@@ -27,9 +34,18 @@ function hs.window.right(win)
   local screen = win:screen()
   local max = screen:frame()
 
-  f.x = max.x + (max.w / 2)
+  if f.w == math.floor(max.w * 0.7) then
+    f.w = max.w * 0.4
+    f.x = max.w * 0.6
+  elseif f.w == math.floor(max.w * 0.5) then
+    f.w = max.w * 0.7
+    f.x = max.w * 0.3
+  else
+    f.w = max.w * 0.5
+    f.x = max.w * 0.5
+  end
+
   f.y = max.y
-  f.w = max.w / 2
   f.h = max.h
   win:setFrame(f)
 end
