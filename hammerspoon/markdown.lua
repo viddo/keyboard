@@ -104,10 +104,13 @@ markdownMode:bindWithAutomaticExit('c', function()
 end)
 
 -- Use Control+m to toggle Markdown Mode
-hs.hotkey.bind({'ctrl'}, 'm', function()
+hs.hotkey.bind({'shift', 'ctrl', 'alt', 'cmd'}, 'm', function()
   markdownMode:enter()
 end)
-markdownMode:bind({'ctrl'}, 'm', function()
+markdownMode:bind({}, 'escape', function()
+  markdownMode:exit()
+end)
+markdownMode:bind({'shift', 'ctrl', 'alt', 'cmd'}, 'm', function()
   markdownMode:exit()
 end)
 -- Abort by escape, too
