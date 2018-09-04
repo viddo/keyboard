@@ -290,6 +290,6 @@ windowLayoutMode:bind(modifiers, trigger, function()
 end)
 
 -- Abort by escape, too
-windowLayoutMode:bind({}, 'escape', function()
+windowLayoutMode:bind({}, 'q', function()
   windowLayoutMode:exit()
 end)
