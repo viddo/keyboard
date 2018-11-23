@@ -40,5 +40,6 @@ require('keyboard.control-escape')
 -- require('keyboard.super')
 -- require('keyboard.windows')
 require('keyboard.windows-grid')
+require('keyboard.vim-keys')
 
 hs.notify.new({title='Hammerspoon', informativeText='Ready to rock 🤘'}):send()
