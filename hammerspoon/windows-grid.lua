@@ -2,11 +2,11 @@
 hs.window.animationDuration = 0
 
 -- Default overrides
-hs.grid.ui.showExtraKeys = true
+hs.grid.ui.showExtraKeys = false
 hs.grid.ui.textSize = 50
-hs.grid.ui.cellStrokeColor = {0,0,0,0.25}
+hs.grid.ui.cellStrokeColor = {0,0,0,0.5}
 hs.grid.ui.cellStrokeWidth = 3
-hs.grid.ui.highlightColor = {0.8,0.8,0,0.1}
+hs.grid.ui.highlightColor = {0.8,0.8,0,0.2}
 hs.grid.setGrid('9x4').setMargins('0x0')
 
 -- local log = hs.logger.new('windows-grid.lua', 'debug')
