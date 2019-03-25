@@ -31,6 +31,7 @@ enableHotkeyForWindowsMatchingFilter = function(windowFilter, hotkey)
   end)
 end
 
+-- require path has to start with keyboard. because of symlink ~/.hammerspoon/keyboard/
 require('keyboard.control-escape')
 -- require('keyboard.delete-words')
 -- require('keyboard.hyper')
@@ -41,5 +42,13 @@ require('keyboard.control-escape')
 -- require('keyboard.windows')
 require('keyboard.windows-grid')
 require('keyboard.vim-keys')
+
+local screenlayout = require("keyboard.screenlayout")
+screenlayout.start()
+watcher = hs.screen.watcher.new(function()
+  -- log.d('Screen change')
+  screenlayout.restoreLayout()
+end)
+watcher:start()
 
 hs.notify.new({title='Hammerspoon', informativeText='Ready to rock 🤘'}):send()
