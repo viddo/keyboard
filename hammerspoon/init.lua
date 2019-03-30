@@ -41,7 +41,7 @@ require('keyboard.control-escape')
 -- require('keyboard.super')
 -- require('keyboard.windows')
 require('keyboard.windows-grid')
-require('keyboard.vim-keys')
+-- require('keyboard.vim-keys')
 
 local screenlayout = require("keyboard.screenlayout")
 screenlayout.start()
