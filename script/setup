@@ -9,8 +9,8 @@ which -s brew || (echo "Homebrew is required: http://brew.sh/" && exit 1)
 
 # Prepare custom settings for Karabiner-Elements
 # https://github.com/tekezo/Karabiner-Elements/issues/597#issuecomment-282760186
-mkdir -p ~/.config
-ln -sfn $PWD/karabiner ~/.config/
+# mkdir -p ~/.config
+# ln -sfn $PWD/karabiner ~/.config/
 
 # Prepare custom settings for Hammerspoon
 mkdir -p ~/.hammerspoon
