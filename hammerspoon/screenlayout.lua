@@ -20,8 +20,14 @@
 -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -- THE SOFTWARE.
 ---
+
 -- Original source from https://github.com/inz/hammerspoon-config/blob/2087b3e2527ad468ab60436a497f6a3fa0bcde04/extensions/screenlayout.lua
--- Slightly modified to work with my setup
+
+-- Modifications:
+--  - Changed paths to match this repo
+--  - Show all stored layouts in menubar (only current one is possible to use)
+--  - Show notifications on successful changes
+--  - Restore layout automatically on screen change
 
 --- === screenlayout ===
 ---
@@ -144,12 +150,17 @@ function module.saveLayout()
   config:write("return " .. inspect(screenLayout))
   config:close()
   log.i("Window layout saved.")
+  hs.notify.new({
+    title = 'Hammerspoon',
+    informativeText = "Saved window layout for " .. getLayoutName()
+  }):send()
+  module.updateMenubar()
   return screenLayout
 end
 
 -- also match patterns http://www.lua.org/pil/20.2.html
 function module.restoreLayout( ... )
-  log.i("Restoring window layout for " .. getLayoutName() .. "...")
+  log.i("Trying to restore window layout...")
   local storedLayouts = getStoredLayouts()
   local currentLayout = storedLayouts[getLayoutName()]
   if currentLayout then
@@ -165,6 +176,11 @@ function module.restoreLayout( ... )
         end)
       end)
     end
+    module.updateMenubar()
+    hs.notify.new({
+      title = 'Hammerspoon',
+      informativeText = "Restored window layout for " .. getLayoutName()
+    }):send()
   else
     log.i("No saved layout found for: " .. getLayoutName())
   end
@@ -174,22 +190,47 @@ function module.start()
   local menubar = menubar.new()
   module.menubar = menubar
 
-  menuitems = {
-    { title = "Save Current Window Layout", fn = module.saveLayout },
-    { title = "Restore Window Layout", fn = module.restoreLayout },
-  }
-
-  if module.DEBUG then
-    table.insert(menuitems, 1, { title = "Screens: " .. getLayoutName(), disabled = true})
-    table.insert(menuitems, 2, { title = "-"})
-  end
-
-  -- menubar:setTitle("W")
   -- icon path must match ~/.hammerspoon/keyboard symlink:
   menubar:setIcon("./keyboard/screenlayout.pdf")
-  menubar:setMenu(menuitems)
 
-  module.restoreLayout()
+  module.updateMenubar()
+
+  local screenWatcher = screen.watcher.new(function()
+    module.updateMenubar()
+    module.restoreLayout()
+  end)
+  screenWatcher:start()
+end
+
+function module.updateMenubar()
+  local menuitems = {
+    { title = "Save Current Window Layout", fn = module.saveLayout },
+  }
+
+  local i = 1
+  local layoutName = getLayoutName()
+  local screenLayouts = getStoredLayouts()
+
+  -- Prepend stored layouts
+  -- Current layout can be used to restore current stored layout
+  for name, layout in pairs(screenLayouts) do
+    local isCurrentLayout = name == layoutName
+    local title = name
+    if isCurrentLayout then
+      title = "Restore " .. name
+    end
+    table.insert(menuitems, i, {
+      title = title,
+      disabled = not isCurrentLayout,
+      fn = module.restoreLayout
+    })
+    i = i + 1
+  end
+
+  -- Divider
+  table.insert(menuitems, i, { title = "-" })
+
+  module.menubar:setMenu(menuitems)
 end
 
 return module
