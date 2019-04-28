@@ -28,6 +28,7 @@
 --  - Show all stored layouts in menubar (only current one is possible to use)
 --  - Show notifications on successful changes
 --  - Restore layout automatically on screen change
+--  - Simplify layout format, to {appName:winFrame}, so whatever file/tab/title doesn't matter
 
 --- === screenlayout ===
 ---
@@ -105,32 +106,22 @@ end
 
 local function getCurrentLayout()
   local screenLayout = getStoredLayouts()
-
   windows = screenLayout[getLayoutName()] or {}
-  fnutils.each(application.runningApplications(), function (app)
-    if app:bundleID() then
-      local appentry = windows[app:bundleID()] or {}
 
+  fnutils.each(application.runningApplications(), function (app)
+    local appName = app:name()
+    if appName then
       fnutils.each(app:allWindows(), function (win)
-        if win and win:frame() and win:frame().h > 1 and win:title() then
-          appentry[win:title()] = win:frame().table
+        if win and win:isStandard() and win:isVisible() then
+          local winFrame = win:frame()
+          -- caveat: this will only store last "valid" window frame for any given app e.g. "Google Chrome" and canary
+          -- have same appName, but could potentially be distinguished by window title (which contains it) but would
+          -- have to do some per-known-app exceptions handling in that case. for now this is good enough
+          if winFrame and winFrame.h > 1 then
+            windows[appName] = winFrame.table
+          end
         end
       end)
-
-      if table_length(appentry) > 0 then
-        log.i("Adding " .. app:bundleID() .. " to layout.")
-        windows[app:bundleID()] = appentry
-      end
-    else
-      log.i("Found app without bundle ID: pid:" .. app:pid() .. ", title: " .. app:title())
-      if app:title() == "quartz-wm" then
-        fnutils.each(app:allWindows(), function (win)
-          log.i("found " .. win:title())
-          if win and win:frame() and win:frame().h > 1 and win:title() then
-            appentry[win:title()] = win:frame().table
-          end
-        end)
-      end
     end
   end)
 
@@ -165,17 +156,17 @@ function module.restoreLayout( ... )
   local currentLayout = storedLayouts[getLayoutName()]
   if currentLayout then
     log.d("Found layout for: " .. getLayoutName())
-    for bundleID, windows in pairs(currentLayout) do
-      fnutils.each(application.applicationsForBundleID(bundleID), function(app)
-        log.d("  found app " .. bundleID)
-        fnutils.each(app:visibleWindows(), function(win)
-          if win:title() and windows[win:title()] then
-            log.d("    found window " .. win:title() .. "")
-            win:setFrame(windows[win:title()], 0)
+    fnutils.each(application.runningApplications(), function (app)
+      local savedFrame = currentLayout[app:name()]
+      if savedFrame then
+        log.i('Found frame for app, ' .. hs.inspect(savedFrame))
+        fnutils.each(app:allWindows(), function (win)
+          if win and win:isStandard() and win:isVisible() then
+            win:setFrame(savedFrame, 0)
           end
         end)
-      end)
-    end
+      end
+    end)
     module.updateMenubar()
     hs.notify.new({
       title = 'Hammerspoon',
