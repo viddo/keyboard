@@ -46,6 +46,7 @@ local window = require "hs.window"
 local inspect = require "hs.inspect"
 local logger = require "hs.logger"
 local log = logger.new('scrlayout')
+local prevLayoutName = ''
 
 module.DEBUG = false
 
@@ -153,27 +154,35 @@ end
 function module.restoreLayout( ... )
   log.i("Trying to restore window layout...")
   local storedLayouts = getStoredLayouts()
-  local currentLayout = storedLayouts[getLayoutName()]
-  if currentLayout then
-    log.d("Found layout for: " .. getLayoutName())
-    fnutils.each(application.runningApplications(), function (app)
-      local savedFrame = currentLayout[app:name()]
-      if savedFrame then
-        log.i('Found frame for app, ' .. hs.inspect(savedFrame))
-        fnutils.each(app:allWindows(), function (win)
-          if win and win:isStandard() and win:isVisible() then
-            win:setFrame(savedFrame, 0)
-          end
-        end)
-      end
-    end)
-    module.updateMenubar()
-    hs.notify.new({
-      title = 'Hammerspoon',
-      informativeText = "Restored window layout for " .. getLayoutName()
-    }):send()
-  else
-    log.i("No saved layout found for: " .. getLayoutName())
+  local currentLayoutName = getLayoutName()
+  local currentLayout = storedLayouts[currentLayoutName]
+
+  -- the watcher that calls this functon is called sporadically, so make sure to
+  -- only update if the layout actually changed
+  if not (currentLayoutName == prevLayoutName) then
+    prevLayoutName = currentLayoutName
+
+    if currentLayout then
+      log.d("Found layout for: " .. getLayoutName())
+      fnutils.each(application.runningApplications(), function (app)
+        local savedFrame = currentLayout[app:name()]
+        if savedFrame then
+          log.i('Found frame for app, ' .. hs.inspect(savedFrame))
+          fnutils.each(app:allWindows(), function (win)
+            if win and win:isStandard() and win:isVisible() then
+              win:setFrame(savedFrame, 0)
+            end
+          end)
+        end
+      end)
+      module.updateMenubar()
+      hs.notify.new({
+        title = 'Hammerspoon',
+        informativeText = "Restored window layout for " .. getLayoutName()
+      }):send()
+    else
+      log.i("No saved layout found for: " .. getLayoutName())
+    end
   end
 end
 
