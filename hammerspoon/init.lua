@@ -1,4 +1,5 @@
 local log = hs.logger.new('init.lua', 'debug')
+local screen = require "hs.screen"
 
 -- Use Control+` to reload Hammerspoon config
 -- hs.hotkey.bind({'ctrl'}, '`', nil, function()
@@ -31,6 +32,13 @@ enableHotkeyForWindowsMatchingFilter = function(windowFilter, hotkey)
   end)
 end
 
+-- Reload this init script when the screen changes,
+-- for screenlayout and window grid scripts to be up-to-date
+local screenWatcher = screen.watcher.new(function()
+  hs.reload()
+end)
+screenWatcher:start()
+
 -- require path has to start with keyboard. because of symlink ~/.hammerspoon/keyboard/
 require('keyboard.control-escape')
 -- require('keyboard.delete-words')
@@ -44,4 +52,4 @@ require('keyboard.windows-grid')
 -- require('keyboard.vim-keys')
 require("keyboard.screenlayout").start()
 
-hs.notify.new({title='Hammerspoon', informativeText='Ready to rock 🤘'}):send()
+hs.notify.new({title='Hammerspoon', informativeText='🖥 Ready', withdrawAfter=2}):send()

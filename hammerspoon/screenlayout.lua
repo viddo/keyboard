@@ -144,7 +144,8 @@ function module.saveLayout()
   log.i("Window layout saved.")
   hs.notify.new({
     title = 'Hammerspoon',
-    informativeText = "Saved window layout for " .. getLayoutName()
+    informativeText = "Saved window layout for " .. getLayoutName(),
+    withdrawAfter=2
   }):send()
   module.updateMenubar()
   return screenLayout
@@ -178,7 +179,8 @@ function module.restoreLayout( ... )
       module.updateMenubar()
       hs.notify.new({
         title = 'Hammerspoon',
-        informativeText = "Restored window layout for " .. getLayoutName()
+        informativeText = "Restored window layout for " .. getLayoutName(),
+        withdrawAfter=2
       }):send()
     else
       log.i("No saved layout found for: " .. getLayoutName())
@@ -194,12 +196,7 @@ function module.start()
   menubar:setIcon("./keyboard/screenlayout.pdf")
 
   module.updateMenubar()
-
-  local screenWatcher = screen.watcher.new(function()
-    module.updateMenubar()
-    module.restoreLayout()
-  end)
-  screenWatcher:start()
+  module.restoreLayout()
 end
 
 function module.updateMenubar()
