@@ -32,13 +32,6 @@ enableHotkeyForWindowsMatchingFilter = function(windowFilter, hotkey)
   end)
 end
 
--- Reload this init script when the screen changes,
--- for screenlayout and window grid scripts to be up-to-date
-local screenWatcher = screen.watcher.new(function()
-  hs.reload()
-end)
-screenWatcher:start()
-
 -- require path has to start with keyboard. because of symlink ~/.hammerspoon/keyboard/
 require('keyboard.control-escape')
 -- require('keyboard.delete-words')
