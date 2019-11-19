@@ -1,5 +1,5 @@
-local log = hs.logger.new('init.lua', 'debug')
-local screen = require "hs.screen"
+--local log = hs.logger.new('init.lua', 'debug')
+-- local screen = require "hs.screen"
 
 -- Use Control+` to reload Hammerspoon config
 -- hs.hotkey.bind({'ctrl'}, '`', nil, function()
@@ -22,15 +22,15 @@ end
 -- hotkey       - The hs.hotkey object to enable/disable.
 --
 -- Returns nothing.
-enableHotkeyForWindowsMatchingFilter = function(windowFilter, hotkey)
-  windowFilter:subscribe(hs.window.filter.windowFocused, function()
-    hotkey:enable()
-  end)
+-- enableHotkeyForWindowsMatchingFilter = function(windowFilter, hotkey)
+--   windowFilter:subscribe(hs.window.filter.windowFocused, function()
+--     hotkey:enable()
+--   end)
 
-  windowFilter:subscribe(hs.window.filter.windowUnfocused, function()
-    hotkey:disable()
-  end)
-end
+--   windowFilter:subscribe(hs.window.filter.windowUnfocused, function()
+--     hotkey:disable()
+--   end)
+-- end
 
 -- require path has to start with keyboard. because of symlink ~/.hammerspoon/keyboard/
 require('keyboard.control-escape')
