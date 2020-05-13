@@ -39,19 +39,21 @@ down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
 
   if character == 'd' and hyper then
     --- Open Dropdox tray
-    hs.applescript([[
-      ignoring application responses
-        tell application "System Events" to tell UI element "Dropbox"
-          click menu bar item 1 of menu bar 2
+    hs.osascript.applescript([[
+      with timeout of 1 second
+        ignoring application responses
+          tell application "System Events" to tell UI element "Dropbox"
+            click menu bar item 1 of menu bar 2
+          end tell
+        end ignoring
+        delay 0.1
+        do shell script "killall System\\ Events"
+        tell application "System Events" to tell process "Dropbox"
+          tell menu bar item 1 of menu bar 2
+            click menu item "Open Dropbox in Menu Bar" of menu 1
+          end tell
         end tell
-      end ignoring
-      delay 0.1
-      do shell script "killall System\\ Events"
-      tell application "System Events" to tell process "Dropbox"
-        tell menu bar item 1 of menu bar 2
-          click menu item "Open Dropbox in Menu Bar" of menu 1
-        end tell
-      end tell
+      end timeout
     ]])
     hyperTime = nil
     hyper = false
