@@ -24,13 +24,16 @@ keyTap = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(evt)
   -- log.d('key', hs.keycodes.map[key])
   -- Uncomment to see log in hammerspoon console
   -- log.d('key:', key)
+
+  -- Maximize window
   if hs.keycodes.map[key] == 'space' then
-    -- log.d('space')
     keyTap:stop()
     hs.grid.maximizeWindow()
     hs.grid:hide()
     return true
   end
+
+  -- Reload
   if hs.keycodes.map[key] == '/' then
     keyTap:stop()
     hs.reload()
