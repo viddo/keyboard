@@ -45,7 +45,7 @@ down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
           click menu bar item 1 of menu bar 2
         end tell
       end ignoring
-      delay 0.065
+      delay 0.1
       do shell script "killall System\\ Events"
       tell application "System Events" to tell process "Dropbox"
         tell menu bar item 1 of menu bar 2
