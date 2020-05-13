@@ -1,5 +1,4 @@
-local log = hs.logger.new('init.lua', 'debug')
-local screen = require "hs.screen"
+-- local log = hs.logger.new('init.lua', 'debug')
 
 -- Use Control+` to reload Hammerspoon config
 -- hs.hotkey.bind({'ctrl'}, '`', nil, function()
@@ -13,6 +12,11 @@ keyUpDown = function(modifiers, key)
   hs.eventtap.keyStroke(modifiers, key, 0)
 end
 
+-- Get around paste blockers with cmd+alt+v
+hs.hotkey.bind({"cmd", "shift"}, "V", function()
+  hs.eventtap.keyStrokes(hs.pasteboard.getContents())
+end)
+
 -- Subscribe to the necessary events on the given window filter such that the
 -- given hotkey is enabled for windows that match the window filter and disabled
 -- for windows that don't match the window filter.
@@ -22,26 +26,20 @@ end
 -- hotkey       - The hs.hotkey object to enable/disable.
 --
 -- Returns nothing.
-enableHotkeyForWindowsMatchingFilter = function(windowFilter, hotkey)
-  windowFilter:subscribe(hs.window.filter.windowFocused, function()
-    hotkey:enable()
-  end)
+-- enableHotkeyForWindowsMatchingFilter = function(windowFilter, hotkey)
+--   windowFilter:subscribe(hs.window.filter.windowFocused, function()
+--     hotkey:enable()
+--   end)
 
-  windowFilter:subscribe(hs.window.filter.windowUnfocused, function()
-    hotkey:disable()
-  end)
-end
-
--- Reload this init script when the screen changes,
--- for screenlayout and window grid scripts to be up-to-date
-local screenWatcher = screen.watcher.new(function()
-  hs.reload()
-end)
-screenWatcher:start()
+--   windowFilter:subscribe(hs.window.filter.windowUnfocused, function()
+--     hotkey:disable()
+--   end)
+-- end
 
 -- require path has to start with keyboard. because of symlink ~/.hammerspoon/keyboard/
 require('keyboard.control-escape')
 -- require('keyboard.delete-words')
+require('keyboard.hyper-alt')
 -- require('keyboard.hyper')
 -- require('keyboard.markdown')
 -- require('keyboard.microphone')
