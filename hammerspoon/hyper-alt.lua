@@ -56,7 +56,6 @@ down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
       end timeout
     ]])
     hyperTime = nil
-    hyper = false
     return true
   end
 
