@@ -11,6 +11,7 @@ charToAction = {
   -- 2nd row
   ['d'] = function()
     --- Open Dropdox tray
+    --- 2 not happening within 2 sec then it aborts
     hs.osascript.applescript([[
       with timeout of 2 second
         ignoring application responses
@@ -52,10 +53,14 @@ down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
     return true
   end
 
-  local action = charToAction[character]
-  if action and hyper then
-    action()
-    hyperTime = nil
+  if hyper then
+    local action = charToAction[character]
+    if action then
+      action()
+      hyperTime = nil
+    end
+
+    -- prevent other keys while hyper is active
     return true
   end
 end)
