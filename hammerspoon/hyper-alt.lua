@@ -1,5 +1,6 @@
 hyper = false
 hyperTime = nil
+prevChar = nil
 
 charToAction = {
   -- 1st row
@@ -28,6 +29,7 @@ charToAction = {
         end tell
       end timeout
     ]])
+    prevChar = nil
   end,
   ['f'] = function() hs.application.launchOrFocus('Finder') end,
 
@@ -41,11 +43,11 @@ charToAction = {
 }
 
 down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
-  local character = event:getCharacters()
+  local char = event:getCharacters()
   -- local keyCode = event:getKeyCode()
-  -- print("down", character, keyCode)
+  -- print("down", char, keyCode)
 
-  if character == ";" then
+  if char == ";" then
     hyper = true
     if hyperTime == nil then
       hyperTime = hs.timer.absoluteTime()
@@ -54,9 +56,17 @@ down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
   end
 
   if hyper then
-    local action = charToAction[character]
+    local action = charToAction[char]
     if action then
-      action()
+      if char == prevChar then
+        -- If hit same key again hide the application
+        -- Effectively make it
+        hs.application.frontmostApplication():hide()
+        prevChar = nil
+      else 
+        prevChar = char
+        action()
+      end
       hyperTime = nil
     end
 
@@ -67,8 +77,8 @@ end)
 down:start()
 
 up = hs.eventtap.new({hs.eventtap.event.types.keyUp}, function(event)
-  local character = event:getCharacters()
-  if character == ";" and hyper then
+  local char = event:getCharacters()
+  if char == ";" and hyper then
     local currentTime = hs.timer.absoluteTime()
     -- print(currentTime, hyperTime)
     if hyperTime ~= nil and (currentTime - hyperTime) / 1000000 < 250 then
