@@ -1,43 +1,15 @@
 hyper = false
 hyperTime = nil
 
-down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
-  local character = event:getCharacters()
-  local keyCode = event:getKeyCode()
-  -- print("down", character, keyCode)
+charToAction = {
+  -- 1st row
+  ['q'] = function() hs.application.launchOrFocus('iTerm') end,
+  ['w'] = function() hs.application.launchOrFocus('Google Chrome') end,
+  ['e'] = function() hs.application.launchOrFocus('Visual Studio Code') end,
+  ['t'] = function() hs.application.launchOrFocus('Slack') end,
 
-  if character == ";" then
-    hyper = true
-    if hyperTime == nil then
-      hyperTime = hs.timer.absoluteTime()
-    end
-    return true
-  end
-
-  if character == 'h' and hyper then
-    hs.eventtap.keyStroke(nil, "left", 0)
-    hyperTime = nil
-    return true
-  end
-
-  if character == 'j' and hyper then
-    hs.eventtap.keyStroke(nil, "down", 0)
-    hyperTime = nil
-    return true
-  end
-  if character == 'k' and hyper then
-    hs.eventtap.keyStroke(nil, "up", 0)
-    hyperTime = nil
-    return true
-  end
-
-  if character == 'l' and hyper then
-    hs.eventtap.keyStroke(nil, "right", 0)
-    hyperTime = nil
-    return true
-  end
-
-  if character == 'd' and hyper then
+  -- 2nd row
+  ['d'] = function()
     --- Open Dropdox tray
     hs.osascript.applescript([[
       with timeout of 1 second
@@ -55,48 +27,34 @@ down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
         end tell
       end timeout
     ]])
-    hyperTime = nil
+  end,
+  ['f'] = function() hs.application.launchOrFocus('Finder') end,
+
+  ['h'] = function() hs.eventtap.keyStroke(nil, "left", 0) end,
+  ['j'] = function() hs.eventtap.keyStroke(nil, "down", 0) end,
+  ['k'] = function() hs.eventtap.keyStroke(nil, "up", 0) end,
+  ['l'] = function() hs.eventtap.keyStroke(nil, "right", 0) end,
+
+  -- 3rd row
+  ['m'] = function() hs.application.launchOrFocus('Spotify') end,
+}
+
+down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
+  local character = event:getCharacters()
+  -- local keyCode = event:getKeyCode()
+  -- print("down", character, keyCode)
+
+  if character == ";" then
+    hyper = true
+    if hyperTime == nil then
+      hyperTime = hs.timer.absoluteTime()
+    end
     return true
   end
 
-  if character == 'e' and hyper then
-    hs.application.launchOrFocus("Visual Studio Code")
-    hyperTime = nil
-    return true
-  end
-
-  if character == 'f' and hyper then
-    hs.application.launchOrFocus("Finder")
-    hyperTime = nil
-    return true
-  end
-
-  if character == 'r' and hyper then
-    hs.application.launchOrFocus("Slack")
-    hyperTime = nil
-    return true
-  end
-
-  if character == 's' and hyper then
-    hs.application.launchOrFocus("Spotify")
-    hyperTime = nil
-    return true
-  end
-
-  if character == 'q' and hyper then
-    hs.application.launchOrFocus("iTerm")
-    hyperTime = nil
-    return true
-  end
-
-  if character == 't' and hyper then
-    hs.application.launchOrFocus("iTerm")
-    hyperTime = nil
-    return true
-  end
-
-  if character == 'w' and hyper then
-    hs.application.launchOrFocus("Google Chrome")
+  local action = charToAction[character]
+  if action and hyper then
+    action()
     hyperTime = nil
     return true
   end
@@ -106,15 +64,15 @@ down:start()
 up = hs.eventtap.new({hs.eventtap.event.types.keyUp}, function(event)
   local character = event:getCharacters()
   if character == ";" and hyper then
-      local currentTime = hs.timer.absoluteTime()
-      -- print(currentTime, hyperTime)
-      if hyperTime ~= nil and (currentTime - hyperTime) / 1000000 < 250 then
-          down:stop()
-          hs.eventtap.keyStrokes(";")
-          down:start()
-      end
-      hyper = false
-      hyperTime = nil
+    local currentTime = hs.timer.absoluteTime()
+    -- print(currentTime, hyperTime)
+    if hyperTime ~= nil and (currentTime - hyperTime) / 1000000 < 250 then
+      down:stop()
+      hs.eventtap.keyStrokes(";")
+      down:start()
+    end
+    hyper = false
+    hyperTime = nil
   end
 end)
 up:start()
