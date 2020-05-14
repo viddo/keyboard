@@ -12,7 +12,7 @@ charToAction = {
   ['d'] = function()
     --- Open Dropdox tray
     hs.osascript.applescript([[
-      with timeout of 1 second
+      with timeout of 2 second
         ignoring application responses
           tell application "System Events" to tell UI element "Dropbox"
             click menu bar item 1 of menu bar 2
