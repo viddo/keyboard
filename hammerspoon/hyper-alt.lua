@@ -107,7 +107,7 @@ down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
         prevChar = nil
       else 
         prevChar = char
-        local r = action()
+        action()
       end
     end
   end
