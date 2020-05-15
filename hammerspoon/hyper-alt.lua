@@ -33,7 +33,7 @@ charToAction = {
       runningAppleScript = true
       --- Open Dropdox tray, which automatically focused on search input :)
       --- Abort script if it does not execute within reasonable timeout
-      hs.osascript.applescript([[
+      local success = hs.osascript.applescript([[
         with timeout of 3 second
           ignoring application responses
             tell application "System Events" to tell UI element "Dropbox"
@@ -49,6 +49,9 @@ charToAction = {
           end tell
         end timeout
       ]])
+      if not success then
+        print("Could not trigger Dropbox for whatever reason")
+      end
       runningAppleScript = false
     end
   end,
