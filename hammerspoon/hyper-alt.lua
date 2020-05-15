@@ -1,6 +1,7 @@
 hyper = false
 hyperTime = nil
 prevChar = nil
+runningAppleScript = false
 
 charToAction = {
   -- 1st row
@@ -11,25 +12,30 @@ charToAction = {
 
   -- 2nd row
   ['d'] = function()
-    --- Open Dropdox tray
-    --- 2 not happening within 2 sec then it aborts
-    hs.osascript.applescript([[
-      with timeout of 2 second
-        ignoring application responses
-          tell application "System Events" to tell UI element "Dropbox"
-            click menu bar item 1 of menu bar 2
-          end tell
-        end ignoring
-        delay 0.1
-        do shell script "killall System\\ Events"
-        tell application "System Events" to tell process "Dropbox"
-          tell menu bar item 1 of menu bar 2
-            click menu item "Open Dropbox in Menu Bar" of menu 1
-          end tell
-        end tell
-      end timeout
-    ]])
+    -- Reset prev char to avoid toggle behavior
     prevChar = nil
+    if not runningAppleScript then
+      runningAppleScript = true
+      --- Open Dropdox tray, which automatically focused on search input :)
+      --- Abort script if it does not execute within reasonable timeout
+      hs.osascript.applescript([[
+        with timeout of 3 second
+          ignoring application responses
+            tell application "System Events" to tell UI element "Dropbox"
+              click menu bar item 1 of menu bar 2
+            end tell
+          end ignoring
+          delay 0.1
+          do shell script "killall System\\ Events"
+          tell application "System Events" to tell process "Dropbox"
+            tell menu bar item 1 of menu bar 2
+              click menu item "Open Dropbox in Menu Bar" of menu 1
+            end tell
+          end tell
+        end timeout
+      ]])
+      runningAppleScript = false
+    end
   end,
   ['f'] = function() hs.application.launchOrFocus('Finder') end,
 
