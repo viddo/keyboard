@@ -1,28 +1,30 @@
 hyper = false
 hyperTime = nil
-prevChar = nil
 runningAppleScript = false
 
 createAppLauncher = function(name, altName)
   return function()
-    local isRunning = hs.application.get(name) or hs.application.get(altName or "")
-    -- local app = hs.application.get(name)
-    if not isRunning then
+    local app = hs.application.get(name) or hs.application.get(altName or "")
+    if app then
+      if app:isFrontmost() then
+        app:hide()
+      else
+        app:activate()
+      end
+    else 
       hs.notify.new({
         title = 'Hammerspoon',
         informativeText = "Opening " .. name .. "…",
         withdrawAfter=2
       }):send()
+      hs.application.launchOrFocus(name)
     end
-    hs.application.launchOrFocus(name)
   end
 end
 
 doKeyStroke = function(key)
   return function()
     hs.eventtap.keyStroke(nil, key, 0)
-    -- Reset prev char to avoid toggle behavior
-    prevChar = nil
   end
 end
 
@@ -35,8 +37,6 @@ charToAction = {
 
   -- 2nd row
   ['d'] = function()
-    -- Reset prev char to avoid toggle behavior
-    prevChar = nil
     if not runningAppleScript then
       runningAppleScript = true
       --- Open Dropdox tray, which automatically focused on search input :)
@@ -64,7 +64,7 @@ charToAction = {
     end
   end,
   ['f'] = createAppLauncher('Finder'),
-  ['g'] = createAppLauncher('Github Desktop', 'Github'),
+  ['g'] = createAppLauncher('GitHub Desktop'),
   ['h'] = doKeyStroke("left"),
   ['j'] = doKeyStroke("down"),
   ['k'] = doKeyStroke("up"),
@@ -74,8 +74,7 @@ charToAction = {
 -- 3rd row
 launchSpotify = createAppLauncher('Spotify')
 charToAction['m'] = function()
-  if hs.application.get("Music") then
-  -- if Music app is running let that take presedence over Spotify
+  if hs.application.get("Music") then -- Music take presedence over Spotify
     hs.application.launchOrFocus("Music")
   else
     launchSpotify()
@@ -84,9 +83,6 @@ end
 
 down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
   local char = event:getCharacters()
-  -- local keyCode = event:getKeyCode()
-  -- print("down", char, keyCode)
-
   if char == ";" then
     hyper = true
     if hyperTime == nil then
@@ -100,15 +96,8 @@ down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
 
     local action = charToAction[char]
     if action then
-      if char == prevChar then
-        -- If hit same key again hide the application
-        -- Effectively make it
-        hs.application.frontmostApplication():hide()
-        prevChar = nil
-      else 
-        prevChar = char
-        action()
-      end
+      action()
+      return true -- Prevent keys from emitting characters while ; is pressed 
     end
   end
 end)
@@ -118,7 +107,6 @@ up = hs.eventtap.new({hs.eventtap.event.types.keyUp}, function(event)
   local char = event:getCharacters()
   if char == ";" and hyper then
     local currentTime = hs.timer.absoluteTime()
-    -- print(currentTime, hyperTime)
     if hyperTime ~= nil and (currentTime - hyperTime) / 1000000 < 250 then
       down:stop()
       hs.eventtap.keyStrokes(";")
