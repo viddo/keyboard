@@ -69,10 +69,18 @@ charToAction = {
   ['j'] = doKeyStroke("down"),
   ['k'] = doKeyStroke("up"),
   ['l'] = doKeyStroke("right"),
-
-  -- 3rd row
-  ['m'] = createAppLauncher('Spotify'),
 }
+
+-- 3rd row
+launchSpotify = createAppLauncher('Spotify')
+charToAction['m'] = function()
+  if hs.application.get("Music") then
+  -- if Music app is running let that take presedence over Spotify
+    hs.application.launchOrFocus("Music")
+  else
+    launchSpotify()
+  end
+end
 
 down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
   local char = event:getCharacters()
