@@ -3,12 +3,27 @@ hyperTime = nil
 prevChar = nil
 runningAppleScript = false
 
+createAppLauncher = function(name, altName)
+  return function()
+    local isRunning = hs.application.get(name) or hs.application.get(altName or "")
+    -- local app = hs.application.get(name)
+    if not isRunning then
+      hs.notify.new({
+        title = 'Hammerspoon',
+        informativeText = "Opening " .. name .. "…",
+        withdrawAfter=2
+      }):send()
+    end
+    hs.application.launchOrFocus(name)
+  end
+end
+
 charToAction = {
   -- 1st row
-  ['q'] = function() hs.application.launchOrFocus('iTerm') end,
-  ['w'] = function() hs.application.launchOrFocus('Google Chrome') end,
-  ['e'] = function() hs.application.launchOrFocus('Visual Studio Code') end,
-  ['t'] = function() hs.application.launchOrFocus('Slack') end,
+  ['q'] = createAppLauncher('iTerm', 'iTerm2'),
+  ['w'] = createAppLauncher('Google Chrome'),
+  ['e'] = createAppLauncher('Visual Studio Code', 'Code'),
+  ['t'] = createAppLauncher('Slack'),
 
   -- 2nd row
   ['d'] = function()
@@ -37,7 +52,7 @@ charToAction = {
       runningAppleScript = false
     end
   end,
-  ['f'] = function() hs.application.launchOrFocus('Finder') end,
+  ['f'] = createAppLauncher('Finder'),
 
   ['h'] = function() hs.eventtap.keyStroke(nil, "left", 0) end,
   ['j'] = function() hs.eventtap.keyStroke(nil, "down", 0) end,
@@ -45,7 +60,7 @@ charToAction = {
   ['l'] = function() hs.eventtap.keyStroke(nil, "right", 0) end,
 
   -- 3rd row
-  ['m'] = function() hs.application.launchOrFocus('Spotify') end,
+  ['m'] = createAppLauncher('Spotify'),
 }
 
 down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
