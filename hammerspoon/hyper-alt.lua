@@ -53,6 +53,7 @@ charToAction = {
     end
   end,
   ['f'] = createAppLauncher('Finder'),
+  ['g'] = createAppLauncher('Github Desktop', 'Github'),
 
   ['h'] = function() hs.eventtap.keyStroke(nil, "left", 0) end,
   ['j'] = function() hs.eventtap.keyStroke(nil, "down", 0) end,
