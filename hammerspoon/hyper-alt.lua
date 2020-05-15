@@ -18,6 +18,14 @@ createAppLauncher = function(name, altName)
   end
 end
 
+doKeyStroke = function(key)
+  return function()
+    hs.eventtap.keyStroke(nil, key, 0)
+    -- Reset prev char to avoid toggle behavior
+    prevChar = nil
+  end
+end
+
 charToAction = {
   -- 1st row
   ['q'] = createAppLauncher('iTerm', 'iTerm2'),
@@ -57,11 +65,10 @@ charToAction = {
   end,
   ['f'] = createAppLauncher('Finder'),
   ['g'] = createAppLauncher('Github Desktop', 'Github'),
-
-  ['h'] = function() hs.eventtap.keyStroke(nil, "left", 0) end,
-  ['j'] = function() hs.eventtap.keyStroke(nil, "down", 0) end,
-  ['k'] = function() hs.eventtap.keyStroke(nil, "up", 0) end,
-  ['l'] = function() hs.eventtap.keyStroke(nil, "right", 0) end,
+  ['h'] = doKeyStroke("left"),
+  ['j'] = doKeyStroke("down"),
+  ['k'] = doKeyStroke("up"),
+  ['l'] = doKeyStroke("right"),
 
   -- 3rd row
   ['m'] = createAppLauncher('Spotify'),
@@ -81,6 +88,8 @@ down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
   end
 
   if hyper then
+    hyperTime = nil
+
     local action = charToAction[char]
     if action then
       if char == prevChar then
@@ -90,13 +99,9 @@ down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
         prevChar = nil
       else 
         prevChar = char
-        action()
+        local r = action()
       end
-      hyperTime = nil
     end
-
-    -- prevent other keys while hyper is active
-    return true
   end
 end)
 down:start()
