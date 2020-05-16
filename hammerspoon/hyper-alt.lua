@@ -80,6 +80,7 @@ charToAction['m'] = function()
     launchSpotify()
   end
 end
+charToAction['n'] = createAppLauncher('Notes')
 
 down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
   local char = event:getCharacters()
