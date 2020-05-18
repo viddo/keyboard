@@ -13,7 +13,7 @@ keyUpDown = function(modifiers, key)
 end
 
 -- Get around paste blockers with cmd+alt+v
-hs.hotkey.bind({"cmd", "shift"}, "V", function()
+hs.hotkey.bind({"cmd", "alt"}, "v", function()
   hs.eventtap.keyStrokes(hs.pasteboard.getContents())
 end)
 
