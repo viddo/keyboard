@@ -1,3 +1,16 @@
+-- Show visual cue when pressed next to apple icon in top-left corner
+canvas = require("hs.canvas")
+visualCue = canvas.new{x = 1, y = 1, h = 50, w = 50}
+visualCue[1] = {
+  frame = { h = 50, w = 20, x = 0, y = -35 },
+  text = hs.styledtext.new(".", {
+    font = { name = ".AppleSystemUIFont", size = 50 },
+    color = hs.drawing.color.red,
+    paragraphStyle = { alignment = "center" }
+  }),
+  type = "text",
+}
+
 hyper = false
 hyperTime = nil
 runningAppleScript = false
@@ -89,6 +102,7 @@ down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
     if hyperTime == nil then
       hyperTime = hs.timer.absoluteTime()
     end
+    visualCue:show()
     return true
   end
 
@@ -107,6 +121,7 @@ down:start()
 up = hs.eventtap.new({hs.eventtap.event.types.keyUp}, function(event)
   local char = event:getCharacters()
   if char == ";" and hyper then
+    visualCue:hide()
     local currentTime = hs.timer.absoluteTime()
     if hyperTime ~= nil and (currentTime - hyperTime) / 1000000 < 250 then
       down:stop()
