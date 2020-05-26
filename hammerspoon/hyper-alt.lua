@@ -27,10 +27,9 @@ createAppLauncher = function(name, altName)
     else 
       hs.notify.new({
         title = 'Hammerspoon',
-        informativeText = "Opening " .. name .. "…",
+        informativeText = "Open " .. name .. " to focus on it using this shortcut",
         withdrawAfter=2
       }):send()
-      hs.application.launchOrFocus(name)
     end
   end
 end
