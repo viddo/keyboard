@@ -45,6 +45,7 @@ charToAction = {
   ['q'] = createAppLauncher('iTerm', 'iTerm2'),
   ['w'] = createAppLauncher('Google Chrome'),
   ['e'] = createAppLauncher('Visual Studio Code', 'Code'),
+  ['r'] = createAppLauncher('Dropbox Paper'),
   ['t'] = createAppLauncher('Slack'),
 
   -- 2nd row
