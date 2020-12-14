@@ -11,9 +11,16 @@ visualCue[1] = {
   type = "text",
 }
 
-hyper = false
-hyperTime = nil
-runningAppleScript = false
+k = hs.hotkey.modal.new('ctrl', ';')
+function k:entered() 
+    visualCue:show()
+end
+function k:exited()
+    visualCue:hide()
+end
+k:bind('', 'escape', function() k:exit() end)
+k:bind('', ';', function() k:exit() end)
+k:bind('ctrl', ';', function() k:exit() end)
 
 createAppLauncher = function(name, altName)
   return function()
@@ -31,78 +38,28 @@ createAppLauncher = function(name, altName)
         withdrawAfter=2
       }):send()
     end
+    k:exit()
   end
 end
 
-doKeyStroke = function(key)
-  return function()
-    hs.eventtap.keyStroke(nil, key, 0)
-  end
-end
+-- 1st row
+k:bind('', 'q', createAppLauncher('iTerm', 'iTerm2'))
+k:bind('', 'w', createAppLauncher('Google Chrome'))
+k:bind('', 'e', createAppLauncher('Visual Studio Code', 'Code'))
+k:bind('', 'r', createAppLauncher('Dropbox Paper'))
+k:bind('', 't', createAppLauncher('Slack'))
 
-charToAction = {
-  -- 1st row
-  ['q'] = createAppLauncher('iTerm', 'iTerm2'),
-  ['w'] = createAppLauncher('Google Chrome'),
-  ['e'] = createAppLauncher('Visual Studio Code', 'Code'),
-  ['r'] = createAppLauncher('Dropbox Paper'),
-  ['t'] = createAppLauncher('Slack'),
-
-  -- 2nd row
-  ['f'] = createAppLauncher('Finder'),
-  ['g'] = createAppLauncher('GitHub Desktop'),
-  ['h'] = doKeyStroke("left"),
-  ['j'] = doKeyStroke("down"),
-  ['k'] = doKeyStroke("up"),
-  ['l'] = doKeyStroke("right"),
-}
+-- 2nd row
+k:bind('', 'f', createAppLauncher('Finder'))
+k:bind('', 'g', createAppLauncher('GitHub Desktop'))
 
 -- 3rd row
+k:bind('', 'n', createAppLauncher('Notes'))
 launchSpotify = createAppLauncher('Spotify')
-charToAction['m'] = function()
+k:bind('', 'm', function() 
   if hs.application.get("Music") then -- Music take presedence over Spotify
     hs.application.launchOrFocus("Music")
   else
     launchSpotify()
   end
-end
-charToAction['n'] = createAppLauncher('Notes')
-
-down = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
-  local char = event:getCharacters()
-  if char == ";" then
-    hyper = true
-    if hyperTime == nil then
-      hyperTime = hs.timer.absoluteTime()
-    end
-    visualCue:show()
-    return true
-  end
-
-  if hyper then
-    hyperTime = nil
-
-    local action = charToAction[char]
-    if action then
-      action()
-      return true -- Prevent keys from emitting characters while ; is pressed 
-    end
-  end
 end)
-down:start()
-
-up = hs.eventtap.new({hs.eventtap.event.types.keyUp}, function(event)
-  local char = event:getCharacters()
-  if char == ";" and hyper then
-    visualCue:hide()
-    local currentTime = hs.timer.absoluteTime()
-    if hyperTime ~= nil and (currentTime - hyperTime) / 1000000 < 250 then
-      down:stop()
-      hs.eventtap.keyStrokes(";")
-      down:start()
-    end
-    hyper = false
-    hyperTime = nil
-  end
-end)
-up:start()
