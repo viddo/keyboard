@@ -44,7 +44,7 @@ end
 
 -- 1st row
 k:bind('', 'q', createAppLauncher('iTerm', 'iTerm2'))
-k:bind('', 'w', createAppLauncher('Google Chrome'))
+k:bind('', 'w', createAppLauncher('Brave Browser'))
 k:bind('', 'e', createAppLauncher('Visual Studio Code', 'Code'))
 k:bind('', 'r', createAppLauncher('Dropbox Paper'))
 k:bind('', 't', createAppLauncher('Slack'))
