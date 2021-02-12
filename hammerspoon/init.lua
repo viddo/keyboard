@@ -52,4 +52,10 @@ require('keyboard.windows-grid')
 -- require('keyboard.vim-keys')
 require("keyboard.screenlayout").start()
 
+-- Forward-delete on ctrl+backspace/delete too (for external )
+hs.hotkey.bind('ctrl', 'delete', function()
+  hs.eventtap.keyStroke({}, 'forwarddelete', 0)
+  return false
+end)
+
 hs.notify.new({title='Hammerspoon', informativeText='🖥 Ready', withdrawAfter=2}):send()
