@@ -1,11 +1,13 @@
 local apps = {
   {
-    ["name"]= "Insiders",
-    ["titlePattern"] = "dendron"
+    ["name"]= "Code - Insiders",
+    ["titlePattern"] = "Dendron"
   }
 }
 local appsCount = #apps
 local currentIdx = nil
+-- local log = hs.logger.new('cycle-apps.lua', 'debug')
+
 
 -- if app of index i is running, pass it to given fn (otherwise skip)
 local withApp = function(i, fn)
