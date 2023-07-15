@@ -5,7 +5,7 @@ hd = "Hands Down"
 watcher = hs.application.watcher.new(function(appName, eventType, app)
   -- log.d('appName', appName)
   -- log.d('evenType', eventType)
-  if appName == "zoom.us" then
+  if appName == "zoom.us" or appName == 'FaceTime' then
     if eventType == hs.application.watcher.launched then
       --- stop
       local hdApp = hs.application.get(hd)
