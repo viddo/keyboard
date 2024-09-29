@@ -2,6 +2,10 @@ local apps = {
   {
     ["name"]= "Code - Insiders",
     ["titlePattern"] = "Dendron"
+  },
+  {
+    ["name"]= "Obsidian",
+    ["titlePattern"] = "Obsidian"
   }
 }
 local appsCount = #apps
