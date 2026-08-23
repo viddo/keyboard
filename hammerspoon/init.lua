@@ -37,7 +37,7 @@ end)
 -- end
 
 -- require path has to start with keyboard. because of symlink ~/.hammerspoon/keyboard/
-require('keyboard.apps-triggers')
+-- require('keyboard.apps-triggers')
 require('keyboard.control-escape')
 require("keyboard.cycle-apps")
 -- require('keyboard.delete-words')
