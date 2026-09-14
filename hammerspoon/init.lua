@@ -17,6 +17,14 @@ hs.hotkey.bind({"cmd", "alt"}, "v", function()
   hs.eventtap.keyStrokes(hs.pasteboard.getContents())
 end)
 
+-- Spotlight clipboard
+-- hs.hotkey.bind({"cmd"}, "`", function()
+--     hs.eventtap.keyStroke({"cmd"}, "space")
+--     hs.timer.doAfter(0.001, function()
+--         hs.eventtap.keyStroke({"cmd"}, "4")
+--     end)
+-- end)
+
 -- Subscribe to the necessary events on the given window filter such that the
 -- given hotkey is enabled for windows that match the window filter and disabled
 -- for windows that don't match the window filter.
